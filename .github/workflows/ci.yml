@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ main ]
 
-
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -58,3 +57,33 @@ jobs:
               echo
             done
           fi
+
+      # 5. SonarCloud analysis (main branch push)
+      - name: SonarCloud Analysis (Push)
+        if: github.event_name == 'push'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=KasunWilbagedara_Note_app \
+            -Dsonar.organization=KasunWilbagedara \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=$SONAR_TOKEN
+
+      # 6. SonarCloud analysis (pull request)
+      - name: SonarCloud Analysis (Pull Request)
+        if: github.event_name == 'pull_request'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          PULL_REQUEST_BRANCH: ${{ github.head_ref }}
+          PULL_REQUEST_KEY: ${{ github.event.pull_request.number }}
+          PULL_REQUEST_BASE: ${{ github.base_ref }}
+        run: |
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=KasunWilbagedara_Note_app \
+            -Dsonar.organization=KasunWilbagedara \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=$SONAR_TOKEN \
+            -Dsonar.pullrequest.branch=$PULL_REQUEST_BRANCH \
+            -Dsonar.pullrequest.key=$PULL_REQUEST_KEY \
+            -Dsonar.pullrequest.base=$PULL_REQUEST_BASE
