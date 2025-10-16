@@ -65,8 +65,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=KasunWilbagedara_Note_app \
-            -Dsonar.organization=KasunWilbagedara \
+            -Dsonar.projectKey=KasunWilbagedara_Note_app
+            -Dsonar.organization=kasunwilbagedara
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=$SONAR_TOKEN
 
